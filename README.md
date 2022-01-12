@@ -13,3 +13,6 @@ For convenience I have some pre-build binaries in the `release` section. Use at 
 - Mac intel : No binary
 - Windows : No binary
 
+## On mac
+
+Aftter downloadin the binay zip. Unzip it in `Applications` folder (or wherever you like). Click to open. Then go to `Settings -> Security` and allow openning up your app.
