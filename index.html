@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <link href="./styles.css" type="text/css" rel="stylesheet">
+    <title>Mnemonics Encryptor - Powered By Ferrum</title>
+  </head>
+  <body>
+    <div class="container">
+    <h1>Notes - Disconnect WIFI</h1>
+    <div id="op-0">
+      <p>
+        This is a simple utility to encrypt your mnemonics. 
+        Please make sure <b>ALL INTERNET IS DISCONNECTED</b> before using
+        this utility. </b>
+        Also <b>fully</b> close the application before connecting back internet.
+      </p>
+      <p>
+        This tool gives you a few options to:
+        <ul>
+          <li>Encrypt your mnemonics</li>
+          <li>Decrypt your mnemonics</li>
+          <li>Veify your master password</li>
+        </ul>
+      </p>
+    </div>
+    <div>
+      <input id="opt-btn-1" type="button" value="Encrypt Mnemonics" /><br /><br />
+      <input id="opt-btn-2" type="button" value="Decrypt Mnemonics" /><br /><br />
+      <input id="opt-btn-3" type="button" value="Verify Master PW" /><br /><br />
+    </div>
+
+    <div id="op-1">
+    <h1>Option 1 - Encrypt your private key</h1>
+    <div>
+      <span>Choose a <b>master</b> password</span></br>
+      <ul>
+        <li>
+        Example of a good PW: <b>that sweet movie watched with jenny and edward while busted</b>
+        </li>
+        <li>
+          You need to remember this pw, so don't use upper / lower case mix 
+          or special charachters
+        </li>
+        <li>
+          If you speak a language other than english,
+          make pw in your other language with latin charachters
+        </li>
+        <li>
+          Make sure it is long but you can memorize it
+        </li>
+        <li>
+          Frequently open this tool and verify your password
+        </li>
+      </ul>
+    </div>
+    <div>
+      <span>Enter your master password:</span></br>
+      <input type="text" id="pw-1" />
+                  <br/><br />
+    </div>
+    <div>
+      <span>Enter your mnemonics:</span></br>
+      <textarea rows="4" cols="60" id="mnemonics-1"></textarea>
+            <br/><br />
+    </div>
+    <div>
+      <input type="button" id="btn-1" value="Encrypt My Mnemonics" />
+            <br/><br/>
+    </div>
+    <div>
+      <span><b>Your encrypted mnemonics - Record this and store in safe place</b></span>
+      <br/>
+      <div class="data-out">
+      <span id="mnemonics-2">xxx</span>
+      </div>
+      <br/><br />
+    </div>
+    <div>
+      <span><b>Your seed phrase checksum</b></span>
+            <br/>
+      <div class="data-out">
+      <span id="chk-1">?</span>
+      </div>
+      <p>
+        Keep a record of this checksum. This does not need to be kept secret. 
+        However, when decrypting your encrypted seed phrase, you can provide
+        this checksum to make sure your data entry is correct.
+      </p>
+    </div>
+    <div>
+      <span><b>Your pw test phrase - Save it in your PW manager e.g. lastpass</b></span>
+            <br/>
+      <div class="data-out">
+      <span id="pw-2">xxx</span>
+      </div>
+      <p>
+        Note: Periodically use this "pw test phrase" to verify that you remember
+        your pw right without having to touch to your mnemincs
+      </p>
+    </div>
+    </div>
+
+    <div id="op-2">
+    <br/>
+    <hr/>
+    <br/>
+    <h1>Option 2 - Decrypt your mnemonics</h1>
+    <div>
+      <span>Enter your master password:</span></br>
+      <input type="text" id="pw-3" />
+                        <br/><br />
+    </div>
+    <div>
+      <span>Enter your mnemonics:</span></br>
+      <textarea rows="4" cols="60" id="mnemonics-3"></textarea>
+            <br/><br />
+    </div>
+    <div>
+      <span>Enter your "encrypted" mnemonics checksum [Optional]:</span></br>
+      <input type="text" id="chk-2" />
+                        <br/><br />
+      <p>
+        Note - if you don't provide checksum, we cannot know if you have entered
+        the correct pw. We will calculate a mnemonic regardless and if your pw
+        or encrypted mnemonic is invalid, the result will be invalid. <br />
+        Use the checksum to reduce the confusion.
+      </p>
+    </div>
+    <div>
+      <input type="button" id="btn-2" value="Decrypt My Mnemonics" />
+      <br/><br/>
+    </div>
+
+    <div>
+      <span><b>Your decrypted mnemonics - Enter this into your ledger or HW wallet</b></span>
+      <br/>
+      <div class="data-out">
+      <span id="mnemonics-4">xxx</span>
+      </div>
+      <br/><br />
+    </div>
+    </div>
+
+    <div id="op-3">
+    <br/>
+    <hr/>
+    <br/>
+    <h1>Option 3 - Verify your master PW</h1>
+    <div>
+      <span>Enter your master password:</span></br>
+      <input type="text" id="pw-4" />
+                        <br/><br />
+    </div>
+    <div>
+      <span>Enter your master password TEST phrase:</span></br>
+      <input type="text" id="pw-test-1" />
+    </div>
+
+    <div>
+      <span><b>Is this the correct PW?</b></span>
+      <br/>
+      <div class="data-out">
+      <span id="pw-test-2">???</span>
+      </div>
+      <br/><br />
+    </div>
+    <div>
+      <input type="button" id="btn-3" value="Check My Master PW" />
+    </div>
+    </div>
+
+    <br/>
+    <hr/>
+    <br/>
+    <h1>Stay Safe</h1>
+    <!-- You can also require other files to run in this process -->
+    <script src="./renderer.js"></script>
+    </div>
+  </body>
+</html>
