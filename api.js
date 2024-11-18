@@ -18,14 +18,16 @@ function toPw(pw) {
     return h.digest('hex');
 }
 
-function crypt(pw, mn, isEncrypt) {
+function crypt(pw, mn, isEncrypt, ignoreMnChecksum) {
     const pp = toPw(pw);
     console.log('Password after digest: ', pp);
     const msg = bip39.mnemonicToEntropy(mn);
     const b1 = Buffer.from(pp, 'hex');
     const b2 = Buffer.from(msg, 'hex');
     if (b1.length != 32 || b2.length != 32) {
+      if (!ignoreMnChecksum) {
         throw new Error('Both pw and mn must be 32 bytes');
+      }
     }
     var res = []
     for (var i = 0; i < b1.length; i++) {
@@ -33,7 +35,7 @@ function crypt(pw, mn, isEncrypt) {
     }
     const rv = bip39.entropyToMnemonic(Buffer.from(res));
     if (!bip39.validateMnemonic(rv)) {
-        throw new Error('Invalid mnemonic!');
+        throw new Error('Invalid mnemonic was entered!');
     }
     return [rv, hash(isEncrypt ? mn : rv).substr(0,8)];
 }

@@ -16,6 +16,11 @@ body {
 div {
     width: 600px;
 }
+
+fieldset {
+  width: 500px;
+}
+
 /* Add styles here to customize the appearance of your app */
 input {
     width: 600px;

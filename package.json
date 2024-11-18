@@ -2,6 +2,9 @@
   "name": "hilarious-outcome-rain-8trde",
   "productName": "hilarious-outcome-rain-8trde",
   "description": "My Electron application description",
+  "bin": {
+    "cli": "./cli.js"
+  },
   "keywords": [],
   "main": "./main.js",
   "version": "1.0.0",
@@ -10,7 +13,9 @@
     "start": "electron ."
   },
   "dependencies": {
-    "bip39": "*"
+    "bip39": "*",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
   },
   "devDependencies": {
     "electron": "16.0.2"

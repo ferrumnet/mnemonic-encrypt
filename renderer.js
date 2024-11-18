@@ -23,11 +23,13 @@ _id('btn-1').addEventListener('click', () => {
     const pw = clean(_id('pw-1').value);
     validatePw(pw);
     const mn = clean(_id('mnemonics-1').value);
+    const confirm = _id('mnemonics-check-1').checked;
     const pwTest = api.toPwTest(pw);
-    const [newMn, chk] = api.crypt(pw, mn, true);
+    const [newMn, chk, addr] = api.crypt(pw, mn, true, confirm);
     _id('mnemonics-2').innerText = newMn;
     _id('pw-2').innerText = pwTest;
     _id('chk-1').innerText = chk;
+    _id('addr-1').innerText = addr;
     } catch(e) {
         console.error(e)
         alert(e.toString());
@@ -40,11 +42,13 @@ _id('btn-2').addEventListener('click', () => {
     const pw = clean(_id('pw-3').value);
     const mn = clean(_id('mnemonics-3').value);
     const chk = clean(_id('chk-2').value);
-    const [newMn, actualChk] = api.crypt(pw, mn, false);
+    const confirm = _id('mnemonics-check-2').checked;
+    const [newMn, actualChk, addr] = api.crypt(pw, mn, false, confirm);
     if (chk && actualChk !== chk) {
         throw new Error('Checksome does not match. Make sure you have entered you PW and mnemonics correctly')
     }
     _id('mnemonics-4').innerText = newMn;
+    _id('addr-2').innerText = addr;
     } catch(e) {
         console.error(e)
         alert(e.toString());
