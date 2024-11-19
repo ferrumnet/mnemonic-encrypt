@@ -1,5 +1,9 @@
 const crypto = require("crypto");
 const bip39 = require('bip39');
+const ethWallet = require('ethereumjs-wallet');
+const Wallet = ethWallet.default;
+const bitcoin = require('bitcoinjs-lib');
+const hdkey = require('hdkey');
 
 const pwHashLoop = 100000;
 
@@ -37,7 +41,7 @@ function crypt(pw, mn, isEncrypt, ignoreMnChecksum) {
     if (!bip39.validateMnemonic(rv)) {
         throw new Error('Invalid mnemonic was entered!');
     }
-    return [rv, hash(isEncrypt ? mn : rv).substr(0,8)];
+    return [rv, hash(isEncrypt ? mn : rv).substr(0,8), mnemonicAddrs(mn)];
 }
 
 function toPwTest(pw) {
@@ -46,7 +50,7 @@ function toPwTest(pw) {
 
 function verifyPw(pw, res) {
     const pp = toPwTest(pw);
-    return pp === res;
+    return pp.substring(0, 8) === res.substring(0, 8);
 }
 
 function newMnemonic() {
@@ -54,6 +58,40 @@ function newMnemonic() {
     return bip39.entropyToMnemonic(sk);
 }
 
+function mnemonicAddrs(mnemonic) {
+  const addrEth = entropyToEthAddr(mnemonic);
+  const addrBtc = entropyToBtcAddr(mnemonic);
+  return `ETH: "${addrEth}" - BTC: "${addrBtc}"`;
+}
+
+function entropyToEthAddr(mnemonic) {
+  // Generate seed from mnemonic
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+
+  // Derive Ethereum key using BIP44
+  const hdWallet = hdkey.fromMasterSeed(seed);
+  const path = "m/44'/60'/0'/0/0"; // Ethereum derivation path
+  const childKey = hdWallet.derive(path);
+  const ethWallet = Wallet.fromPrivateKey(childKey.privateKey);
+  const ethAddress = ethWallet.getAddressString();
+
+  return ethAddress;
+}
+
+function entropyToBtcAddr(mnemonic) {
+  // Generate seed from mnemonic
+  const seed = bip39.mnemonicToSeedSync(mnemonic);
+
+  // Derive Bitcoin key using BIP44
+  const hdWallet = hdkey.fromMasterSeed(seed);
+  const path = "m/44'/0'/0'/0/0"; // Bitcoin derivation path
+  const childKey = hdWallet.derive(path);
+  const { address } = bitcoin.payments.p2pkh({ pubkey: childKey.publicKey });
+
+  return address;
+}
+
+
 module.exports = {
-    verifyPw, crypt, toPwTest, newMnemonic,
+    verifyPw, crypt, toPwTest, newMnemonic, mnemonicAddrs,
 }

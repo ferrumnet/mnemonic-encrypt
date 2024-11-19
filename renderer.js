@@ -27,7 +27,7 @@ _id('btn-1').addEventListener('click', () => {
     const pwTest = api.toPwTest(pw);
     const [newMn, chk, addr] = api.crypt(pw, mn, true, confirm);
     _id('mnemonics-2').innerText = newMn;
-    _id('pw-2').innerText = pwTest;
+    _id('pw-2').innerText = pwTest.substring(0, 8);
     _id('chk-1').innerText = chk;
     _id('addr-1').innerText = addr;
     } catch(e) {

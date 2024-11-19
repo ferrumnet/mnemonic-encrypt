@@ -14,8 +14,11 @@
   },
   "dependencies": {
     "bip39": "*",
+    "bitcoinjs-lib": "^7.0.0-rc.0",
     "chalk": "^5.3.0",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "ethereumjs-wallet": "^1.0.2",
+    "hdkey": "^2.1.0"
   },
   "devDependencies": {
     "electron": "16.0.2"
