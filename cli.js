@@ -3,7 +3,8 @@
 const { program } = require("commander");
 const bip39 = require('bip39');
 const crypto = require("crypto");
-const { mnemonicAddrs } = require('./api');
+const { mnemonicAddrs, mnemonicAddrsEthBtc, mnemonicKeysEthBtc } = require('./api');
+const qrcode = require('qrcode-terminal');
 
 function keyIsMn(key) {
   if (!key) {
@@ -20,8 +21,10 @@ function keyIsMn(key) {
 program
   .version("1.0.0")
   .description("mnemonic-encrypt")
-  .option("-c, --command <type>", "Command: 'entropy' to convert entropy. 'random' to generate random mnemonics, 'addr': to print addresses ")
+  .option("-c, --command <type>", "Command: 'entropy' to convert entropy. 'random' to generate random mnemonics, 'addr': to print addresses, 'wallet': to print wallets ")
   .option("-k, --key <type>", "The key to be converted. A mnemonics or an entropy")
+  .option("-n, --number <type>", "Number of items to display")
+  .option("--qr <type>", "Type of QR code")
   .action((options) => {
     switch(options.command) {
       case "random":
@@ -54,7 +57,47 @@ program
           console.log('Key must be mnemonics');
           return -1;
         }
-        console.log(mnemonicAddrs(mn2.join(' ')));
+        const mn2Txt = mn2.join(' ');
+        console.log(mnemonicAddrs(mn2Txt));
+        const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mn2Txt);
+        if (options.qr === 'eth') {
+          qrcode.generate(addrEth);
+        } else if (options.qr === 'btc') {
+          qrcode.generate(addrBtc);
+        } else if (!!options.qr) {
+          console.log('INVALID OPTION --qr', options.qr)
+        }
+        // qrcode.generate(addrBtc);
+        break;
+      case "wallet":
+        const [isMn3, mn3] = keyIsMn(options.key);
+        if (!isMn3) { 
+          console.log('Key must be mnemonics');
+          return -1;
+        }
+        const mn3Txt = mn3.join(' ');
+        const count = options.number || 1;
+        {
+          let [addrEth, addrBtc] = mnemonicAddrsEthBtc(mn3Txt, count);
+          let [keyEth, keyBtc] = mnemonicKeysEthBtc(mn3Txt, count);
+          keyEth = keyEth.privateKey.toString('hex');
+          keyBtc = keyBtc.privateKey.toString('hex');
+          if (options.qr === 'eth') {
+            console.log('WALLET # ', count)
+            console.log(addrEth);
+            console.log('NOTE: BELOW IS YOUR PRIVATE KEY - KEEP IT SUPER SAFE')
+            console.log(keyEth);
+            qrcode.generate(keyEth);
+          } else if (options.qr === 'btc') {
+            console.log('WALLET # ', count)
+            console.log(addrBtc);
+            console.log('NOTE: BELOW IS YOUR PRIVATE KEY - KEEP IT SUPER SAFE')
+            console.log(keyBtc);
+            qrcode.generate(keyBtc);
+          } else {
+            console.log('INVALID OPTION --qr', options.qr || '[REQUIRED]')
+          }
+        }
         break;
       default:
         console.log("Unknown command");

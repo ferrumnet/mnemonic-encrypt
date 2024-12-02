@@ -41,7 +41,7 @@ function crypt(pw, mn, isEncrypt, ignoreMnChecksum) {
     if (!bip39.validateMnemonic(rv)) {
         throw new Error('Invalid mnemonic was entered!');
     }
-    return [rv, hash(isEncrypt ? mn : rv).substr(0,8), mnemonicAddrs(mn)];
+    return [rv, hash(isEncrypt ? mn : rv).substr(0,8), mnemonicAddrs(isEncrypt ? mn : rv)];
 }
 
 function toPwTest(pw) {
@@ -58,40 +58,51 @@ function newMnemonic() {
     return bip39.entropyToMnemonic(sk);
 }
 
+function mnemonicAddrsEthBtc(mnemonic, der=undefined) {
+  const addrEth = entropyToEthAddr(mnemonic, der)[0];
+  const addrBtc = entropyToBtcAddr(mnemonic, der)[0];
+  return [addrEth, addrBtc];
+}
+
+function mnemonicKeysEthBtc(mnemonic, der=undefined) {
+  const keyEth = entropyToEthAddr(mnemonic, der)[1];
+  const keyBtc = entropyToBtcAddr(mnemonic, der)[1];
+  return [keyEth, keyBtc];
+}
+
 function mnemonicAddrs(mnemonic) {
-  const addrEth = entropyToEthAddr(mnemonic);
-  const addrBtc = entropyToBtcAddr(mnemonic);
+  const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mnemonic);
   return `ETH: "${addrEth}" - BTC: "${addrBtc}"`;
 }
 
-function entropyToEthAddr(mnemonic) {
+function entropyToEthAddr(mnemonic, der=0) {
   // Generate seed from mnemonic
   const seed = bip39.mnemonicToSeedSync(mnemonic);
 
   // Derive Ethereum key using BIP44
   const hdWallet = hdkey.fromMasterSeed(seed);
-  const path = "m/44'/60'/0'/0/0"; // Ethereum derivation path
+  const path = `m/44'/60'/0'/0/${der}`; // Ethereum derivation path
   const childKey = hdWallet.derive(path);
   const ethWallet = Wallet.fromPrivateKey(childKey.privateKey);
   const ethAddress = ethWallet.getAddressString();
 
-  return ethAddress;
+  return [ethAddress, childKey];
 }
 
-function entropyToBtcAddr(mnemonic) {
+function entropyToBtcAddr(mnemonic, der=0) {
   // Generate seed from mnemonic
   const seed = bip39.mnemonicToSeedSync(mnemonic);
 
   // Derive Bitcoin key using BIP44
   const hdWallet = hdkey.fromMasterSeed(seed);
-  const path = "m/44'/0'/0'/0/0"; // Bitcoin derivation path
+  const path = `m/44'/0'/0'/0/${der}`; // Bitcoin derivation path
   const childKey = hdWallet.derive(path);
   const { address } = bitcoin.payments.p2pkh({ pubkey: childKey.publicKey });
 
-  return address;
+  return [address, childKey];
 }
 
 
 module.exports = {
-    verifyPw, crypt, toPwTest, newMnemonic, mnemonicAddrs,
+    verifyPw, crypt, toPwTest, newMnemonic, mnemonicAddrs, mnemonicAddrsEthBtc, mnemonicKeysEthBtc,
 }
