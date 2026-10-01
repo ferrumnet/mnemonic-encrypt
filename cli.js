@@ -53,25 +53,29 @@ program
         break;
       case "addr":
         const [isMn2, mn2] = keyIsMn(options.key);
-        if (!isMn2) { 
+        if (!isMn2) {
           console.log('Key must be mnemonics');
           return -1;
         }
-        const mn2Txt = mn2.join(' ');
-        console.log(mnemonicAddrs(mn2Txt));
-        const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mn2Txt);
-        if (options.qr === 'eth') {
-          qrcode.generate(addrEth);
-        } else if (options.qr === 'btc') {
-          qrcode.generate(addrBtc);
-        } else if (!!options.qr) {
-          console.log('INVALID OPTION --qr', options.qr)
+        const n = Number(options.number || '1');
+        for(let i=0; i<n; i++) {
+                const mn2Txt = mn2.join(' ');
+                console.log(i, '> ', mnemonicAddrs(mn2Txt, i));
+                const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mn2Txt, i);
+                if (options.qr === 'eth') {
+                  qrcode.generate(addrEth);
+                } else if (options.qr === 'btc') {
+                  qrcode.generate(addrBtc);
+                } else if (!!options.qr) {
+                  console.log('INVALID OPTION --qr', options.qr)
+                }
+                console.log(' ');console.log(' ');console.log(' ');console.log(' ');console.log(' ');
         }
         // qrcode.generate(addrBtc);
         break;
       case "wallet":
         const [isMn3, mn3] = keyIsMn(options.key);
-        if (!isMn3) { 
+        if (!isMn3) {
           console.log('Key must be mnemonics');
           return -1;
         }
