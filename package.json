@@ -13,6 +13,6 @@
     "bip39": "*"
   },
   "devDependencies": {
-    "electron": "16.0.2"
+    "electron": "41.10.6"
   }
 }
