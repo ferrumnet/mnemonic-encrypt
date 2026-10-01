@@ -70,8 +70,8 @@ function mnemonicKeysEthBtc(mnemonic, der=undefined) {
   return [keyEth, keyBtc];
 }
 
-function mnemonicAddrs(mnemonic) {
-  const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mnemonic);
+function mnemonicAddrs(mnemonic, der) {
+  const [addrEth, addrBtc] = mnemonicAddrsEthBtc(mnemonic, der);
   return `ETH: "${addrEth}" - BTC: "${addrBtc}"`;
 }
 
